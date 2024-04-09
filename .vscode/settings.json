@@ -1,0 +1,6 @@
+{
+    "verilog.linting.linter": "verilator",
+    "verilog.linting.verilator.includePath": [
+        "./inc"
+    ]
+}
