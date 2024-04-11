@@ -55,7 +55,7 @@ module ex (
   reg [`DoubleRegBus] mulres;  // 保存乘法结果，宽度为64位
 
   /******************************************************************
-** 第一段：取得最新的HILO寄存器值**
+** 取得最新的HILO寄存器值**
 *******************************************************************/
 
   always @(*) begin
@@ -273,10 +273,9 @@ module ex (
                             reg1_i_not[0] ? 31 : 32) ;
         end
         default: begin
-          arithmeticres <= `ZeroWord;
+          arithmeticres = `ZeroWord;
         end
       endcase
-
     end
   end
 
@@ -306,27 +305,35 @@ module ex (
   // 赋给变量mulres
   always @(*) begin
     if (rst == `RstEnable) begin
-      mulres <= {`ZeroWord, `ZeroWord};
+      mulres = {`ZeroWord, `ZeroWord};
     end else if ((aluop_i == `EXE_MULT_OP) || (aluop_i == `EXE_MUL_OP)) begin
       if (reg1_i[31] ^ reg2_i[31] == 1'b1) begin
-        mulres <= ~hilo_temp + 1;
+        mulres = ~hilo_temp + 1;
       end else begin
-        mulres <= hilo_temp;
+        mulres = hilo_temp;
       end
     end else begin
-      mulres <= hilo_temp;
+      mulres = hilo_temp;
     end
   end
 
 
   /****************************************************************
-** 第三段：依据alusel_i指示的运算类型，选择一个运算结果作为最终结果 **
+** 第四段：依据alusel_i指示的运算类型，选择一个运算结果作为最终结果 **
 ** 此处只有逻辑运算结果 **
 *****************************************************************/
 
   always @(*) begin
     wd_o   = wd_i;
     wreg_o = wreg_i;
+
+    //如果add、addi、sub、subi且溢出设置wreg_o为Disable
+    if(((aluop_i == `EXE_ADD_OP) || (aluop_i == `EXE_ADDI_OP) || (aluop_i == `EXE_SUB_OP)) 
+      && (ov_sum == 1'b1)) begin
+        wreg_o = `WriteDisable;
+      end else begin
+        wreg_o = wreg_i;
+      end
 
     case (alusel_i)
       `EXE_RES_LOGIC: begin
@@ -338,13 +345,19 @@ module ex (
       `EXE_RES_MOVE: begin
         wdata_o = moveres;
       end
+      `EXE_RES_ARITHMETIC: begin
+        wdata_o = arithmeticres;
+      end
+      `EXE_RES_MUL: begin
+        wdata_o = mulres[31:0];
+      end
       default: begin
         wdata_o = `ZeroWord;
       end
     endcase
   end
   /****************************************************************
-** 第四段：如果是MTHI, MTLO, 需要给出whilo_o, hi_o, lo_o的值**
+** 第五段：如果是MTHI, MTLO, 需要给出whilo_o, hi_o, lo_o的值**
 *****************************************************************/
 
   always @(*) begin
@@ -352,7 +365,12 @@ module ex (
       whilo_o = `WriteDisable;
       hi_o = `ZeroWord;
       lo_o = `ZeroWord;
-    end else if (aluop_i == `EXE_MTHI_OP) begin
+    end else if ((aluop_i == `EXE_MULT_OP) || (aluop_i == `EXE_MULTU_OP)) begin
+      whilo_o = `WriteEnable;
+      hi_o = mulres[63:32];
+      lo_o = mulres[31:0];
+    end
+    else if (aluop_i == `EXE_MTHI_OP) begin
       whilo_o = `WriteEnable;
       hi_o = reg1_i;
       lo_o = LO;  // 写HI寄存器，所以LO保持不变
