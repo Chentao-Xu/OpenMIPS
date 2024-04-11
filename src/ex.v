@@ -158,6 +158,9 @@ module ex (
         `EXE_SRA_OP: begin
           shiftres = ({32{reg2_i[31]}} << (6'd32 - {1'b0, reg1_i[4:0]})) | reg2_i >> reg1_i[4:0];
         end
+        default : begin
+          shiftres = `ZeroWord;
+        end
       endcase
     end
   end
@@ -197,16 +200,16 @@ module ex (
     end else begin
       case (aluop_i)
         `EXE_SLT_OP, `EXE_SLTU_OP: begin
-          arithmeticres <= reg1_lt_reg2;  // 比较运算
+          arithmeticres = reg1_lt_reg2;  // 比较运算
         end
         `EXE_ADD_OP, `EXE_ADDU_OP, `EXE_ADDI_OP, `EXE_ADDIU_OP: begin
-          arithmeticres <= result_sum;  // 加法运算
+          arithmeticres = result_sum;  // 加法运算
         end
         `EXE_SUB_OP, `EXE_SUBU_OP: begin
-          arithmeticres <= result_sum;  // 减法运算
+          arithmeticres = result_sum;  // 减法运算
         end
         `EXE_CLZ_OP: begin  // 计数运算clz
-          arithmeticres <=  reg1_i[31] ? 0 : reg1_i[30] 
+          arithmeticres =  reg1_i[31] ? 0 : reg1_i[30] 
                             ? 1 :
                             reg1_i[29] ? 2 : reg1_i[28]
                             ? 3 :
@@ -240,7 +243,7 @@ module ex (
                             ? 31 : 32 ;
         end
         `EXE_CLO_OP: begin  // 计数运算clo
-          arithmeticres <= (reg1_i_not[31] ? 0 :
+          arithmeticres = (reg1_i_not[31] ? 0 :
                             reg1_i_not[29] ? 2 :
                             reg1_i_not[28] ? 3 :
                             reg1_i_not[27] ? 4 :
