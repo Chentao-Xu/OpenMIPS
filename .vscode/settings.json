@@ -1,6 +1,6 @@
 {
-    "verilog.linting.linter": "verilator",
-    "verilog.linting.verilator.includePath": [
-        "./inc"
-    ]
+    "verilog.languageServer.veribleVerilogLs.path": "/opt/verible/bin/verible-verilog-ls",
+    "verilog.formatting.verilogHDL.formatter": "verible-verilog-format",
+    "verilog.formatting.veribleVerilogFormatter.path": "/opt/verible/bin/verible-verilog-format",
+    "verilog.linting.linter": "verilator"
 }

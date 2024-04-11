@@ -333,10 +333,10 @@ module ex (
     //如果add、addi、sub、subi且溢出设置wreg_o为Disable
     if(((aluop_i == `EXE_ADD_OP) || (aluop_i == `EXE_ADDI_OP) || (aluop_i == `EXE_SUB_OP)) 
       && (ov_sum == 1'b1)) begin
-        wreg_o = `WriteDisable;
-      end else begin
-        wreg_o = wreg_i;
-      end
+      wreg_o = `WriteDisable;
+    end else begin
+      wreg_o = wreg_i;
+    end
 
     case (alusel_i)
       `EXE_RES_LOGIC: begin
@@ -372,8 +372,7 @@ module ex (
       whilo_o = `WriteEnable;
       hi_o = mulres[63:32];
       lo_o = mulres[31:0];
-    end
-    else if (aluop_i == `EXE_MTHI_OP) begin
+    end else if (aluop_i == `EXE_MTHI_OP) begin
       whilo_o = `WriteEnable;
       hi_o = reg1_i;
       lo_o = LO;  // 写HI寄存器，所以LO保持不变
