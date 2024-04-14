@@ -30,7 +30,11 @@ module id (
     output reg [`RegBus] reg1_o,
     output reg [`RegBus] reg2_o,
     output reg [`RegAddrBus] wd_o,
-    output reg wreg_o
+    output reg wreg_o,
+
+    //送回到取值阶段的跳转信息  
+    output reg branch_flag_o,
+    output reg branch_target_address_o
 );
 
   //取得指令的功能码
@@ -51,7 +55,7 @@ module id (
 
   always @(*) begin
     if (rst == `RstEnable) begin
-      aluop_o = `EXE_NOP_OP;
+       aluop_o = `EXE_NOP_OP;
       alusel_o = `EXE_RES_NOP;
       wd_o = `NOPRegAddr;
       wreg_o = `WriteDisable;
