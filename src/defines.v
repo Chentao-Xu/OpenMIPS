@@ -103,23 +103,6 @@
 `define EXE_SWL  6'b101010
 `define EXE_SWR  6'b101110
 
-`define EXE_SYSCALL 6'b001100
-   
-`define EXE_TEQ 6'b110100
-`define EXE_TEQI 5'b01100
-`define EXE_TGE 6'b110000
-`define EXE_TGEI 5'b01000
-`define EXE_TGEIU 5'b01001
-`define EXE_TGEU 6'b110001
-`define EXE_TLT 6'b110010
-`define EXE_TLTI 5'b01010
-`define EXE_TLTIU 5'b01011
-`define EXE_TLTU 6'b110011
-`define EXE_TNE 6'b110110
-`define EXE_TNEI 5'b01110
-   
-`define EXE_ERET 32'b01000010000000000000000000011000
-
 `define EXE_NOP 6'b000000
 `define SSNOP 32'b00000000000000000000000001000000
 
@@ -168,6 +151,39 @@
 `define EXE_MULTU_OP  8'b00011001
 `define EXE_MUL_OP  8'b10101001
 
+`define EXE_DIV_OP  8'b00011010
+`define EXE_DIVU_OP  8'b00011011
+
+`define EXE_J_OP  8'b01001111
+`define EXE_JAL_OP  8'b01010000
+`define EXE_JALR_OP  8'b00001001
+`define EXE_JR_OP  8'b00001000
+`define EXE_BEQ_OP  8'b01010001
+`define EXE_BGEZ_OP  8'b01000001
+`define EXE_BGEZAL_OP  8'b01001011
+`define EXE_BGTZ_OP  8'b01010100
+`define EXE_BLEZ_OP  8'b01010011
+`define EXE_BLTZ_OP  8'b01000000
+`define EXE_BLTZAL_OP  8'b01001010
+`define EXE_BNE_OP  8'b01010010
+
+`define EXE_LB_OP  8'b11100000
+`define EXE_LBU_OP  8'b11100100
+`define EXE_LH_OP  8'b11100001
+`define EXE_LHU_OP  8'b11100101
+`define EXE_LL_OP  8'b11110000
+`define EXE_LW_OP  8'b11100011
+`define EXE_LWL_OP  8'b11100010
+`define EXE_LWR_OP  8'b11100110
+`define EXE_PREF_OP  8'b11110011
+`define EXE_SB_OP  8'b11101000
+`define EXE_SC_OP  8'b11111000
+`define EXE_SH_OP  8'b11101001
+`define EXE_SW_OP  8'b11101011
+`define EXE_SWL_OP  8'b11101010
+`define EXE_SWR_OP  8'b11101110
+`define EXE_SYNC_OP  8'b00001111
+
 `define EXE_NOP_OP 8'b00000000
 
 //AluSel
@@ -176,6 +192,8 @@
 `define EXE_RES_MOVE 3'b011	
 `define EXE_RES_ARITHMETIC 3'b100	
 `define EXE_RES_MUL 3'b101
+`define EXE_RES_JUMP_BRANCH 3'b110
+`define EXE_RES_LOAD_STORE 3'b111
 
 `define EXE_RES_NOP 3'b000
 
@@ -195,3 +213,20 @@
 `define RegNum 32 //通用寄存器的数量
 `define RegNumLog2 5 //寻址通用寄存器使用的地址位数
 `define NOPRegAddr 5'b00000
+
+//数据存储器data_ram
+`define DataAddrBus 31:0
+`define DataBus 31:0
+`define DataMemNum 131071
+`define DataMemNumLog2 17
+`define ByteWidth 7:0
+
+//除法div
+`define DivFree 2'b00
+`define DivByZero 2'b01
+`define DivOn 2'b10
+`define DivEnd 2'b11
+`define DivResultReady 1'b1
+`define DivResultNotReady 1'b0
+`define DivStart 1'b1
+`define DivStop 1'b0

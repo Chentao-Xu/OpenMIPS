@@ -24,6 +24,10 @@ module ex (
     input wire [`RegBus] mem_lo_i,
     input wire mem_whilo_i,
 
+    // 延迟槽
+    input wire is_in_delayslot_i,
+    input wire [`RegBus] link_address_i,
+
     // 处于执行阶段的指令对HI、LO寄存器的写操作请求
     output reg [`RegBus] hi_o,
     output reg [`RegBus] lo_o,
@@ -200,7 +204,7 @@ module ex (
     end else begin
       case (aluop_i)
         `EXE_SLT_OP, `EXE_SLTU_OP: begin
-          arithmeticres = reg1_lt_reg2;  // 比较运算
+          arithmeticres = {{31{1'b0}}, reg1_lt_reg2};  // 比较运算
         end
         `EXE_ADD_OP, `EXE_ADDU_OP, `EXE_ADDI_OP, `EXE_ADDIU_OP: begin
           arithmeticres = result_sum;  // 加法运算
@@ -353,6 +357,9 @@ module ex (
       end
       `EXE_RES_MUL: begin
         wdata_o = mulres[31:0];
+      end
+      `EXE_RES_JUMP_BRANCH:begin
+        wdata_o = link_address_i;
       end
       default: begin
         wdata_o = `ZeroWord;
