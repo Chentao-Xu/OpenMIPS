@@ -42,7 +42,9 @@ module id (
     //判断延迟槽
     output reg next_inst_in_delayslot_o,
     output reg is_in_delayslot_o,
-    output reg [`RegBus] link_addr_o
+    output reg [`RegBus] link_addr_o,
+
+    output wire [`RegBus] inst_o
 );
 
   //取得指令的功能码
@@ -64,6 +66,8 @@ module id (
 
   assign pc_plus_8 = pc_i + 8;
   assign pc_plus_4 = pc_i + 4;
+
+  assign inst_o = inst_i;
 
   //对应分支指令offset左移两位再符号扩展至32位
   assign imm_sll2_signedext = {{14{inst_i[15]}}, {inst_i[15:0]}, 2'b00};
@@ -573,7 +577,7 @@ module id (
                 next_inst_in_delayslot_o = `InDelaySlot;
               end
             end
-            
+
             `EXE_BLTZAL: begin  // bltzal指令
               wreg_o = `WriteEnable;
               aluop_o = `EXE_BGEZAL_OP;
@@ -622,11 +626,127 @@ module id (
               reg2_read_o = 1'b1;
               instvalid = `InstValid;
             end
-             
+
             default: begin
             end
           endcase  // end case op3
         end
+
+        `EXE_LB: begin  // lb指令
+          wreg_o = `WriteEnable;
+          aluop_o = `EXE_LB_OP;
+          alusel_o = `EXE_RES_LOAD_STORE;
+          reg1_read_o = 1'b1;
+          reg2_read_o = 1'b0;
+          wd_o = inst_i[20:16];
+          instvalid = `InstValid;
+        end
+
+        `EXE_LBU: begin  // lbu指令
+          wreg_o = `WriteEnable;
+          aluop_o = `EXE_LBU_OP;
+          alusel_o = `EXE_RES_LOAD_STORE;
+          reg1_read_o = 1'b1;
+          reg2_read_o = 1'b0;
+          wd_o = inst_i[20:16];
+          instvalid = `InstValid;
+        end
+
+        `EXE_LH: begin  // lh指令
+          wreg_o = `WriteEnable;
+          aluop_o = `EXE_LH_OP;
+          alusel_o = `EXE_RES_LOAD_STORE;
+          reg1_read_o = 1'b1;
+          reg2_read_o = 1'b0;
+          wd_o = inst_i[20:16];
+          instvalid = `InstValid;
+        end
+
+        `EXE_LHU: begin  // lhu指令
+          wreg_o = `WriteEnable;
+          aluop_o = `EXE_LHU_OP;
+          alusel_o = `EXE_RES_LOAD_STORE;
+          reg1_read_o = 1'b1;
+          reg2_read_o = 1'b0;
+          wd_o = inst_i[20:16];
+          instvalid = `InstValid;
+        end
+
+        `EXE_LW: begin  // lw指令
+          wreg_o = `WriteEnable;
+          aluop_o = `EXE_LW_OP;
+          alusel_o = `EXE_RES_LOAD_STORE;
+          reg1_read_o = 1'b1;
+          reg2_read_o = 1'b0;
+          wd_o = inst_i[20:16];
+          instvalid = `InstValid;
+        end
+
+        `EXE_LWL: begin  // lwl指令
+          wreg_o = `WriteEnable;
+          aluop_o = `EXE_LWL_OP;
+          alusel_o = `EXE_RES_LOAD_STORE;
+          reg1_read_o = 1'b1;
+          reg2_read_o = 1'b1; // 读出目的寄存器进行组合
+          wd_o = inst_i[20:16];
+          instvalid = `InstValid;
+        end
+
+        `EXE_LWR: begin  // lwr指令
+          wreg_o = `WriteEnable;
+          aluop_o = `EXE_LWR_OP;
+          alusel_o = `EXE_RES_LOAD_STORE;
+          reg1_read_o = 1'b1;
+          reg2_read_o = 1'b1;
+          wd_o = inst_i[20:16];
+          instvalid = `InstValid;
+        end
+
+        `EXE_SB: begin  // sb指令
+          wreg_o = `WriteDisable;
+          aluop_o = `EXE_SB_OP;
+          reg1_read_o = 1'b1;
+          reg2_read_o = 1'b1;
+          instvalid = `InstValid;
+          alusel_o = `EXE_RES_LOAD_STORE;
+        end
+
+        `EXE_SH: begin  // sh指令
+          wreg_o = `WriteDisable;
+          aluop_o = `EXE_SH_OP;
+          reg1_read_o = 1'b1;
+          reg2_read_o = 1'b1;
+          instvalid = `InstValid;
+          alusel_o = `EXE_RES_LOAD_STORE;
+        end
+
+        `EXE_SW: begin  // sw指令
+          wreg_o = `WriteDisable;
+          aluop_o = `EXE_SW_OP;
+          reg1_read_o = 1'b1;
+          reg2_read_o = 1'b1;
+          instvalid = `InstValid;
+          alusel_o = `EXE_RES_LOAD_STORE;
+        end
+
+        `EXE_SWL: begin  // swl指令
+          wreg_o = `WriteDisable;
+          aluop_o = `EXE_SWL_OP;
+          reg1_read_o = 1'b1;
+          reg2_read_o = 1'b1;
+          instvalid = `InstValid;
+          alusel_o = `EXE_RES_LOAD_STORE;
+        end
+
+        `EXE_SWR: begin  // swr指令
+          wreg_o = `WriteDisable;
+          aluop_o = `EXE_SWR_OP;
+          reg1_read_o = 1'b1;
+          reg2_read_o = 1'b1;
+          instvalid = `InstValid;
+          alusel_o = `EXE_RES_LOAD_STORE;
+        end
+
         default: begin
         end
       endcase  // end case op
@@ -708,14 +828,13 @@ module id (
     end
   end
 
-//输出当前译码阶段指令是否为延迟槽指令
-always @(*) begin
-  if (rst == `RstEnable) begin
-    is_in_delayslot_o = `NotInDelaySlot;
+  //输出当前译码阶段指令是否为延迟槽指令
+  always @(*) begin
+    if (rst == `RstEnable) begin
+      is_in_delayslot_o = `NotInDelaySlot;
+    end else begin
+      is_in_delayslot_o = is_in_delayslot_i;
+    end
   end
-  else begin
-    is_in_delayslot_o = is_in_delayslot_i;
-  end
-end
 
 endmodule

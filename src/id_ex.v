@@ -15,6 +15,8 @@ module id_ex (
     input wire next_inst_in_delayslot_i,
     input wire id_is_in_delayslot,
 
+    input wire [`RegBus] id_inst,
+
     // 传递到执行阶段的信息
     output reg [`AluOpBus] ex_aluop,
     output reg [`AluSelBus] ex_alusel,
@@ -24,7 +26,9 @@ module id_ex (
     output reg ex_wreg,
     output reg [`RegBus] ex_link_address,
     output reg ex_is_in_delayslot,
-    output reg is_in_delayslot_o
+    output reg is_in_delayslot_o,
+
+    output reg [`RegBus] ex_inst
 );
 
   always @(posedge clk) begin
@@ -48,6 +52,7 @@ module id_ex (
       ex_link_address <= id_link_address;
       ex_is_in_delayslot <= id_is_in_delayslot;
       is_in_delayslot_o <= next_inst_in_delayslot_i;
+      ex_inst <= id_inst;
     end
   end
 endmodule

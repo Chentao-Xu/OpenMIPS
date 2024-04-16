@@ -27,11 +27,23 @@ module ex (
     // 延迟槽
     input wire is_in_delayslot_i,
     input wire [`RegBus] link_address_i,
+    
+    // 当前处于执行阶段的指令
+    input wire [`RegBus] inst_i,
 
     // 处于执行阶段的指令对HI、LO寄存器的写操作请求
     output reg [`RegBus] hi_o,
     output reg [`RegBus] lo_o,
     output reg whilo_o,
+
+    // 执行阶段运算子类型
+    output reg [`AluOpBus] aluop_o,
+
+    // 加载存储指令的地址
+    output reg [`RegBus] mem_addr_o,
+
+    // 存储指令要存储的数据或者lwl, lwr要加载到的目标寄存器的原始数据
+    output reg [`RegBus] reg2_o,
 
     //执行的结果
     output reg [`RegAddrBus] wd_o,
@@ -57,6 +69,14 @@ module ex (
   wire [`RegBus] opdata2_mult;  // 乘法操作中的乘数
   wire [`DoubleRegBus] hilo_temp;  // 临时保存乘法结果，宽度为64位
   reg [`DoubleRegBus] mulres;  // 保存乘法结果，宽度为64位
+
+  // 传到访存阶段确定加载存储类型
+  assign aluop_o = aluop_i;
+
+  // 存储加载指令的存储器地址 reg1_i为base, inst[15:0]有符号扩展 
+  assign mem_addr_o = reg1_i + {{16{inst_i[15]}},inst_i[15:0]};
+
+  assign reg2_o = reg2_i;
 
   /******************************************************************
 ** 取得最新的HILO寄存器值**
