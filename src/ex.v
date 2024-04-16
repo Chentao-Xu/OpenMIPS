@@ -37,13 +37,13 @@ module ex (
     output reg whilo_o,
 
     // 执行阶段运算子类型
-    output reg [`AluOpBus] aluop_o,
+    output wire [`AluOpBus] aluop_o,
 
     // 加载存储指令的地址
-    output reg [`RegBus] mem_addr_o,
+    output wire [`RegBus] mem_addr_o,
 
     // 存储指令要存储的数据或者lwl, lwr要加载到的目标寄存器的原始数据
-    output reg [`RegBus] reg2_o,
+    output wire [`RegBus] reg2_o,
 
     //执行的结果
     output reg [`RegAddrBus] wd_o,
