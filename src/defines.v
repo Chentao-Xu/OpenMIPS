@@ -130,8 +130,8 @@
 //********************* 与 指 令 存 储 器 ROM 有 关 的 宏 定 义 **********************
 `define InstAddrBus 31:0 //ROM的地址总线宽度
 `define InstBus 31:0 //ROM的数据总线宽度
-`define InstMemNum 131071 //ROM的实际大小为128KB
-`define InstMemNumLog2 17 //ROM实际使用的地址线宽度
+`define InstMemNum 4194304 //ROM的实际大小为128KB
+`define InstMemNumLog2 22 //ROM实际使用的地址线宽度
 
 
 //********************* 与 通 用 寄 存 器 Regfile 有 关 的 宏 定 义 *******************
@@ -147,6 +147,6 @@
 //数据存储器data_ram
 `define DataAddrBus 31:0
 `define DataBus 31:0
-`define DataMemNum 131071
-`define DataMemNumLog2 17
+`define DataMemNum 4194304
+`define DataMemNumLog2 22
 `define ByteWidth 7:0

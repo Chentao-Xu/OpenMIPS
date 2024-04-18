@@ -10,10 +10,10 @@ module data_ram (
 );
 
   // 定义四个字节数组
-  reg [`ByteWidth] data_mem0[0:`DataMemNum-1];
-  reg [`ByteWidth] data_mem1[0:`DataMemNum-1];
-  reg [`ByteWidth] data_mem2[0:`DataMemNum-1];
-  reg [`ByteWidth] data_mem3[0:`DataMemNum-1];
+  reg [`ByteWidth] data_mem0[`DataMemNum-1:0];
+  reg [`ByteWidth] data_mem1[`DataMemNum-1:0];
+  reg [`ByteWidth] data_mem2[`DataMemNum-1:0];
+  reg [`ByteWidth] data_mem3[`DataMemNum-1:0];
 
   // 写操作
   always @(posedge clk) begin
