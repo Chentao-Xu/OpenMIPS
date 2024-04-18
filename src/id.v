@@ -139,15 +139,6 @@ module id (
                   instvalid = `InstValid;
                 end
 
-                `EXE_NOR: begin  //nor指令
-                  wreg_o = `WriteEnable;
-                  aluop_o = `EXE_NOR_OP;
-                  alusel_o = `EXE_RES_LOGIC;
-                  reg1_read_o = 1'b1;
-                  reg2_read_o = 1'b1;
-                  instvalid = `InstValid;
-                end
-
                 `EXE_SLLV: begin  //sllv指令
                   wreg_o = `WriteEnable;
                   aluop_o = `EXE_SLL_OP;
@@ -175,89 +166,9 @@ module id (
                   instvalid = `InstValid;
                 end
 
-                `EXE_SYNC: begin  //sync指令
-                  wreg_o = `WriteDisable;
-                  aluop_o = `EXE_NOP_OP;
-                  alusel_o = `EXE_RES_NOP;
-                  reg1_read_o = 1'b0;
-                  reg2_read_o = 1'b1;
-                  instvalid = `InstValid;
-                end
-
-                `EXE_MFHI: begin  //mfhi指令
-                  wreg_o = `WriteEnable;
-                  aluop_o = `EXE_MFHI_OP;
-                  alusel_o = `EXE_RES_MOVE;
-                  reg1_read_o = 1'b0;
-                  reg2_read_o = 1'b0;
-                  instvalid = `InstValid;
-                end
-
-                `EXE_MFLO: begin  // mflo指令
-                  wreg_o = `WriteEnable;
-                  aluop_o = `EXE_MFLO_OP;
-                  alusel_o = `EXE_RES_MOVE;
-                  reg1_read_o = 1'b0;
-                  reg2_read_o = 1'b0;
-                  instvalid = `InstValid;
-                end
-
-                `EXE_MTHI: begin  // mthi指令
-                  wreg_o = `WriteDisable;
-                  aluop_o = `EXE_MTHI_OP;
-                  reg1_read_o = 1'b1;
-                  reg2_read_o = 1'b0;
-                  instvalid = `InstValid;
-                end
-
-                `EXE_MTLO: begin  // mtlo指令
-                  wreg_o = `WriteDisable;
-                  aluop_o = `EXE_MTLO_OP;
-                  reg1_read_o = 1'b1;
-                  reg2_read_o = 1'b0;
-                  instvalid = `InstValid;
-                end
-
-                `EXE_MOVN: begin  // movn指令
-                  aluop_o = `EXE_MOVN_OP;
-                  alusel_o = `EXE_RES_MOVE;
-                  reg1_read_o = 1'b1;
-                  reg2_read_o = 1'b1;
-                  instvalid = `InstValid;
-                  //reg2_o的值就是地址为rt的通用寄存器的值
-                  if (reg2_o != `ZeroWord) begin
-                    wreg_o = `WriteEnable;
-                  end else begin
-                    wreg_o = `WriteDisable;
-                  end
-                end
-
-                `EXE_MOVZ: begin  // movz指令
-                  aluop_o = `EXE_MOVZ_OP;
-                  alusel_o = `EXE_RES_MOVE;
-                  reg1_read_o = 1'b1;
-                  reg2_read_o = 1'b1;
-                  instvalid = `InstValid;
-                  //reg2_o的值就是地址为rt的通用寄存器的值
-                  if (reg2_o == `ZeroWord) begin
-                    wreg_o = `WriteEnable;
-                  end else begin
-                    wreg_o = `WriteDisable;
-                  end
-                end
-
                 `EXE_SLT: begin  // slt指令
                   wreg_o = `WriteEnable;
                   aluop_o = `EXE_SLT_OP;
-                  alusel_o = `EXE_RES_ARITHMETIC;
-                  reg1_read_o = 1'b1;
-                  reg2_read_o = 1'b1;
-                  instvalid = `InstValid;
-                end
-
-                `EXE_SLTU: begin  // sltu指令
-                  wreg_o = `WriteEnable;
-                  aluop_o = `EXE_SLTU_OP;
                   alusel_o = `EXE_RES_ARITHMETIC;
                   reg1_read_o = 1'b1;
                   reg2_read_o = 1'b1;
@@ -286,31 +197,6 @@ module id (
                   wreg_o = `WriteEnable;
                   aluop_o = `EXE_SUB_OP;
                   alusel_o = `EXE_RES_ARITHMETIC;
-                  reg1_read_o = 1'b1;
-                  reg2_read_o = 1'b1;
-                  instvalid = `InstValid;
-                end
-
-                `EXE_SUBU: begin  // subu指令
-                  wreg_o = `WriteEnable;
-                  aluop_o = `EXE_SUBU_OP;
-                  alusel_o = `EXE_RES_ARITHMETIC;
-                  reg1_read_o = 1'b1;
-                  reg2_read_o = 1'b1;
-                  instvalid = `InstValid;
-                end
-
-                `EXE_MULT: begin  // mult指令
-                  wreg_o = `WriteDisable;
-                  aluop_o = `EXE_MULT_OP;
-                  reg1_read_o = 1'b1;
-                  reg2_read_o = 1'b1;
-                  instvalid = `InstValid;
-                end
-
-                `EXE_MULTU: begin  // multu指令
-                  wreg_o = `WriteDisable;
-                  aluop_o = `EXE_MULTU_OP;
                   reg1_read_o = 1'b1;
                   reg2_read_o = 1'b1;
                   instvalid = `InstValid;
@@ -352,7 +238,7 @@ module id (
           endcase  // end case op2
         end
 
-        `EXE_ORI: begin
+        `EXE_ORI: begin //ori指令
           wreg_o = `WriteEnable;
           aluop_o = `EXE_OR_OP;
           alusel_o = `EXE_RES_LOGIC;
@@ -396,36 +282,6 @@ module id (
           instvalid = `InstValid;
         end
 
-        `EXE_PREF: begin  //pref指令
-          wreg_o = `WriteDisable;
-          aluop_o = `EXE_NOP_OP;
-          alusel_o = `EXE_RES_NOP;
-          reg1_read_o = 1'b0;
-          reg2_read_o = 1'b0;
-          instvalid = `InstValid;
-        end
-
-        `EXE_SLTI: begin  // slti指令
-          wreg_o = `WriteEnable;
-          aluop_o = `EXE_SLT_OP;
-          alusel_o = `EXE_RES_ARITHMETIC;
-          reg1_read_o = 1'b1;
-          reg2_read_o = 1'b0;
-          imm = {{16{inst_i[15]}}, inst_i[15:0]};
-          wd_o = inst_i[20:16];
-          instvalid = `InstValid;
-        end
-
-        `EXE_SLTIU: begin  // sltiu指令
-          wreg_o = `WriteEnable;
-          aluop_o = `EXE_SLTU_OP;
-          alusel_o = `EXE_RES_ARITHMETIC;
-          reg1_read_o = 1'b1;
-          reg2_read_o = 1'b0;
-          imm = {{16{inst_i[15]}}, inst_i[15:0]};
-          wd_o = inst_i[20:16];
-          instvalid = `InstValid;
-        end
 
         `EXE_ADDI: begin  // addi指令
           wreg_o = `WriteEnable;
@@ -548,22 +404,6 @@ module id (
               end
             end
 
-            `EXE_BGEZAL: begin  // bgezal指令
-              wreg_o = `WriteEnable;
-              aluop_o = `EXE_BGEZAL_OP;
-              alusel_o = `EXE_RES_JUMP_BRANCH;
-              reg1_read_o = 1'b1;
-              reg2_read_o = 1'b0;
-              link_addr_o = pc_plus_8;
-              wd_o = 5'b11111;
-              instvalid = `InstValid;
-              if (reg1_o[31] == 1'b0) begin
-                branch_target_address_o = pc_plus_4 + imm_sll2_signedext;
-                branch_flag_o = `Branch;
-                next_inst_in_delayslot_o = `InDelaySlot;
-              end
-            end
-
             `EXE_BLTZ: begin  // bltz指令
               wreg_o = `WriteDisable;
               aluop_o = `EXE_BGEZAL_OP;
@@ -578,21 +418,6 @@ module id (
               end
             end
 
-            `EXE_BLTZAL: begin  // bltzal指令
-              wreg_o = `WriteEnable;
-              aluop_o = `EXE_BGEZAL_OP;
-              alusel_o = `EXE_RES_JUMP_BRANCH;
-              reg1_read_o = 1'b1;
-              reg2_read_o = 1'b0;
-              link_addr_o = pc_plus_8;
-              wd_o = 5'b11111;
-              instvalid = `InstValid;
-              if (reg1_o[31] == 1'b1) begin
-                branch_target_address_o = pc_plus_4 + imm_sll2_signedext;
-                branch_flag_o = `Branch;
-                next_inst_in_delayslot_o = `InDelaySlot;
-              end
-            end
             default: begin
             end
           endcase
@@ -600,24 +425,6 @@ module id (
 
         `EXE_SPECIAL2_INST: begin  // op等于SPECIAL2
           case (op3)
-            `EXE_CLZ: begin  // clz指令
-              wreg_o = `WriteEnable;
-              aluop_o = `EXE_CLZ_OP;
-              alusel_o = `EXE_RES_ARITHMETIC;
-              reg1_read_o = 1'b1;
-              reg2_read_o = 1'b0;
-              instvalid = `InstValid;
-            end
-
-            `EXE_CLO: begin  // clo指令
-              wreg_o = `WriteEnable;
-              aluop_o = `EXE_CLO_OP;
-              alusel_o = `EXE_RES_ARITHMETIC;
-              reg1_read_o = 1'b1;
-              reg2_read_o = 1'b0;
-              instvalid = `InstValid;
-            end
-
             `EXE_MUL: begin  // mul指令
               wreg_o = `WriteEnable;
               aluop_o = `EXE_MUL_OP;
@@ -642,35 +449,6 @@ module id (
           instvalid = `InstValid;
         end
 
-        `EXE_LBU: begin  // lbu指令
-          wreg_o = `WriteEnable;
-          aluop_o = `EXE_LBU_OP;
-          alusel_o = `EXE_RES_LOAD_STORE;
-          reg1_read_o = 1'b1;
-          reg2_read_o = 1'b0;
-          wd_o = inst_i[20:16];
-          instvalid = `InstValid;
-        end
-
-        `EXE_LH: begin  // lh指令
-          wreg_o = `WriteEnable;
-          aluop_o = `EXE_LH_OP;
-          alusel_o = `EXE_RES_LOAD_STORE;
-          reg1_read_o = 1'b1;
-          reg2_read_o = 1'b0;
-          wd_o = inst_i[20:16];
-          instvalid = `InstValid;
-        end
-
-        `EXE_LHU: begin  // lhu指令
-          wreg_o = `WriteEnable;
-          aluop_o = `EXE_LHU_OP;
-          alusel_o = `EXE_RES_LOAD_STORE;
-          reg1_read_o = 1'b1;
-          reg2_read_o = 1'b0;
-          wd_o = inst_i[20:16];
-          instvalid = `InstValid;
-        end
 
         `EXE_LW: begin  // lw指令
           wreg_o = `WriteEnable;
@@ -678,26 +456,6 @@ module id (
           alusel_o = `EXE_RES_LOAD_STORE;
           reg1_read_o = 1'b1;
           reg2_read_o = 1'b0;
-          wd_o = inst_i[20:16];
-          instvalid = `InstValid;
-        end
-
-        `EXE_LWL: begin  // lwl指令
-          wreg_o = `WriteEnable;
-          aluop_o = `EXE_LWL_OP;
-          alusel_o = `EXE_RES_LOAD_STORE;
-          reg1_read_o = 1'b1;
-          reg2_read_o = 1'b1; // 读出目的寄存器进行组合
-          wd_o = inst_i[20:16];
-          instvalid = `InstValid;
-        end
-
-        `EXE_LWR: begin  // lwr指令
-          wreg_o = `WriteEnable;
-          aluop_o = `EXE_LWR_OP;
-          alusel_o = `EXE_RES_LOAD_STORE;
-          reg1_read_o = 1'b1;
-          reg2_read_o = 1'b1;
           wd_o = inst_i[20:16];
           instvalid = `InstValid;
         end
@@ -711,36 +469,9 @@ module id (
           alusel_o = `EXE_RES_LOAD_STORE;
         end
 
-        `EXE_SH: begin  // sh指令
-          wreg_o = `WriteDisable;
-          aluop_o = `EXE_SH_OP;
-          reg1_read_o = 1'b1;
-          reg2_read_o = 1'b1;
-          instvalid = `InstValid;
-          alusel_o = `EXE_RES_LOAD_STORE;
-        end
-
         `EXE_SW: begin  // sw指令
           wreg_o = `WriteDisable;
           aluop_o = `EXE_SW_OP;
-          reg1_read_o = 1'b1;
-          reg2_read_o = 1'b1;
-          instvalid = `InstValid;
-          alusel_o = `EXE_RES_LOAD_STORE;
-        end
-
-        `EXE_SWL: begin  // swl指令
-          wreg_o = `WriteDisable;
-          aluop_o = `EXE_SWL_OP;
-          reg1_read_o = 1'b1;
-          reg2_read_o = 1'b1;
-          instvalid = `InstValid;
-          alusel_o = `EXE_RES_LOAD_STORE;
-        end
-
-        `EXE_SWR: begin  // swr指令
-          wreg_o = `WriteDisable;
-          aluop_o = `EXE_SWR_OP;
           reg1_read_o = 1'b1;
           reg2_read_o = 1'b1;
           instvalid = `InstValid;
