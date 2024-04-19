@@ -1,23 +1,28 @@
-.org 0x0
-.set noat
-.set noreorder
-.set nomacro
-.global _start
+    .org 0x0
+    .set noreorder
+    .set noat
+    .text
+    .global _start
 _start:
-    ori $1,$0,0x1234 # $1 = 0x00001234
-    sw $1,0x0($0) # 向数据存储器的地址0x0处存储0x00001234
-    # [0x0] = 0x00001234
-    ori $2,$0,0x1234 # 设置寄存器$2 = 0x00001234
-    ori $1,$0,0x0 # 设置寄存器$1 = 0x00000000
-    lw $1,0x0($0) # 从数据存储器的地址0x0将载数据处加到寄存器$1，
-    # 指令执行完毕后，使得$1 = 0x00001234
-    beq $1,$2,Label # 比较寄存器$1与$2，相等，转移到Label处
-    nop
-    ori $1,$0,0x4567
-    nop
-Label:
-    ori $1,$0,0x89ab # 设置寄存器$1 = 0x000089ab
-    nop
-_loop:
-    j _loop
-    nop 
+    ori   $t0, $zero, 0x1   # t0 = 1
+    ori   $t1, $zero, 0x1   # t1 = 1
+    ori   $s1, $zero, 0x4   # s1 = 4
+    ori   $t4, $zero, 0x100 # t4 = 0x100
+    lui   $a0, 0x8040       # a0 = 0x80400000
+    addu  $t5, $a0, $t4     # t5 = 0x80400100
+
+loop:
+    addu  $t2, $t0, $t1     # t2 = t0+t1
+    ori   $t0, $t1, 0x0     # t0 = t1
+    ori   $t1, $t2, 0x0     # t1 = t2
+    sw    $t1, 0($a0)
+    lw    $t3, 0($a0)
+    bne   $t1, $t3, end
+    ori   $zero, $zero, 0   # noop
+    addu  $a0, $a0, $s1     # a0 += 4
+    bne   $a0, $t5, loop
+    ori   $zero, $zero, 0   # noop
+
+end:
+    bne   $s1, $zero, end
+    ori   $zero, $zero, 0   # noop
