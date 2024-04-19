@@ -4,30 +4,30 @@ module id (
     input wire [`InstAddrBus] pc_i,
     input wire [`InstBus] inst_i,
 
-    //读取regfile的�??
+    //读取regfile的输出
     input wire [`RegBus] reg1_data_i,
     input wire [`RegBus] reg2_data_i,
 
-    //执行阶段指令的运算结�?
+    //执行阶段指令的运算结果
     input wire ex_wreg_i,
     input wire [`RegBus] ex_wdata_i,
     input wire [`RegAddrBus] ex_wd_i,
 
-    //处于访存阶段的指令运算结�?
+    //处于访存阶段的指令运算结果
     input wire mem_wreg_i,
     input wire [`RegBus] mem_wdata_i,
     input wire [`RegAddrBus] mem_wd_i,
 
-    //如果是转移指令下�?条在延迟槽中
+    //如果是转移指令下1条在延迟槽中
     input wire is_in_delayslot_i,
 
-    //输出到regfile的信�?
+    //输出到regfile的信息
     output reg reg1_read_o,
     output reg reg2_read_o,
     output reg [`RegAddrBus] reg1_addr_o,
     output reg [`RegAddrBus] reg2_addr_o,
 
-    //送到执行阶段的信�?
+    //送到执行阶段的信信息
     output reg [`AluOpBus] aluop_o,
     output reg [`AluSelBus] alusel_o,
     output reg [`RegBus] reg1_o,
@@ -35,11 +35,11 @@ module id (
     output reg [`RegAddrBus] wd_o,
     output reg wreg_o,
 
-    //送回到取�?阶段的跳转信�?
+    //送回到取址阶段的跳转信息
     output reg branch_flag_o,
     output reg [`RegBus] branch_target_address_o,
 
-    //判断延迟�?
+    //判断延迟槽
     output reg next_inst_in_delayslot_o,
     output reg is_in_delayslot_o,
     output reg [`RegBus] link_addr_o,
@@ -53,7 +53,7 @@ module id (
   wire [5:0] op3 = inst_i[5:0];
   wire [4:0] op4 = inst_i[20:16];
 
-  //保存指令执行�?要的立即�?
+  //保存指令执行要的立即数
   reg [`RegBus] imm;
 
   //指令是否有效
@@ -69,11 +69,11 @@ module id (
 
   assign inst_o = inst_i;
 
-  //对应分支指令offset左移两位再符号扩展至32�?
+  //对应分支指令offset左移两位再符号扩展至32位
   assign imm_sll2_signedext = {{14{inst_i[15]}}, {inst_i[15:0]}, 2'b00};
 
   /****************************************************************
-*********** 第一段：对指令进行译�? *********
+*********** 第一段：对指令进行译码 *********
 *****************************************************************/
 
   always @(*) begin
@@ -520,7 +520,7 @@ module id (
 
 
   /****************************************************************
-*********** 第二段：确定进行运算的源操作�?1 *********
+*********** 第二段：确定进行运算的源操作数1 *********
 *****************************************************************/
 
   always @(*) begin
@@ -540,7 +540,7 @@ module id (
   end
 
   /****************************************************************
-*********** 第二段：确定进行运算的源操作�?2 *********
+*********** 第二段：确定进行运算的源操作数2 *********
 *****************************************************************/
 
   always @(*) begin
