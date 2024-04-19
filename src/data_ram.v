@@ -10,10 +10,10 @@ module data_ram (
 );
 
   // 定义四个字节数组
-  reg [`ByteWidth] data_mem0[`DataMemNum-1:0];
-  reg [`ByteWidth] data_mem1[`DataMemNum-1:0];
-  reg [`ByteWidth] data_mem2[`DataMemNum-1:0];
-  reg [`ByteWidth] data_mem3[`DataMemNum-1:0];
+  reg [`ByteWidth] data_mem0[0:`DataMemNum-1];
+  reg [`ByteWidth] data_mem1[0:`DataMemNum-1];
+  reg [`ByteWidth] data_mem2[0:`DataMemNum-1];
+  reg [`ByteWidth] data_mem3[0:`DataMemNum-1];
 
   // 写操作
   always @(posedge clk) begin
@@ -21,16 +21,16 @@ module data_ram (
       //data_o <= `ZeroWord;
     end else if (we == `WriteEnable) begin
       if (sel[3] == 1'b1) begin
-        data_mem0[addr[`DataMemNumLog2+1:2]] <= data_i[31:24];
+        data_mem3[addr[`DataMemNumLog2+1:2]] <= data_i[31:24];
       end
       if (sel[2] == 1'b1) begin
-        data_mem1[addr[`DataMemNumLog2+1:2]] <= data_i[23:16];
+        data_mem2[addr[`DataMemNumLog2+1:2]] <= data_i[23:16];
       end
       if (sel[1] == 1'b1) begin
-        data_mem2[addr[`DataMemNumLog2+1:2]] <= data_i[15:8];
+        data_mem1[addr[`DataMemNumLog2+1:2]] <= data_i[15:8];
       end
       if (sel[0] == 1'b1) begin
-        data_mem3[addr[`DataMemNumLog2+1:2]] <= data_i[7:0];
+        data_mem0[addr[`DataMemNumLog2+1:2]] <= data_i[7:0];
       end
     end
   end
@@ -41,10 +41,10 @@ module data_ram (
       data_o = `ZeroWord;
     end else if (we == `WriteDisable) begin
       data_o = {
-        data_mem0[addr[`DataMemNumLog2+1:2]],
-        data_mem1[addr[`DataMemNumLog2+1:2]],
+        data_mem3[addr[`DataMemNumLog2+1:2]],
         data_mem2[addr[`DataMemNumLog2+1:2]],
-        data_mem3[addr[`DataMemNumLog2+1:2]]
+        data_mem1[addr[`DataMemNumLog2+1:2]],
+        data_mem0[addr[`DataMemNumLog2+1:2]]
       };
     end else begin
       data_o = `ZeroWord;
