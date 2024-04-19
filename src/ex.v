@@ -10,7 +10,7 @@ module ex (
     input wire wreg_i,
     input wire [`RegAddrBus] wd_i,
 
-    // 延迟槽?
+    // 延迟槽
     input wire is_in_delayslot_i,
     input wire [`RegBus] link_address_i,
 

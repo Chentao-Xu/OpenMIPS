@@ -12,6 +12,7 @@ module id (
     input wire ex_wreg_i,
     input wire [`RegBus] ex_wdata_i,
     input wire [`RegAddrBus] ex_wd_i,
+    input wire [`AluOpBus] ex_aluop_i,
 
     //处于访存阶段的指令运算结果
     input wire mem_wreg_i,
@@ -20,6 +21,8 @@ module id (
 
     //如果是转移指令下1条在延迟槽中
     input wire is_in_delayslot_i,
+
+    output wire stallreq,
 
     //输出到regfile的信息
     output reg reg1_read_o,
@@ -58,6 +61,23 @@ module id (
 
   //指令是否有效
   reg instvalid;
+
+  //reg1是否与上一条指令存在load相关
+  reg stallreq_for_reg1_loadrelate;
+
+  //reg2是否与上一条指令存在load相关
+  reg stallreq_for_reg2_loadrelate;
+
+  //上一条是否是load
+  wire pre_inst_is_load;
+
+  assign pre_inst_is_load = ((ex_aluop_i == `EXE_LB_OP) || 
+                            (ex_aluop_i == `EXE_LW_OP) || 
+                            (ex_aluop_i == `EXE_SB_OP) ||
+                            (ex_aluop_i == `EXE_SW_OP)) 
+                            ? 1'b1 : 1'b0;
+
+  assign stallreq = stallreq_for_reg1_loadrelate || stallreq_for_reg2_loadrelate;
 
   wire [`RegBus] pc_plus_8;
   wire [`RegBus] pc_plus_4;
@@ -238,7 +258,7 @@ module id (
           endcase  // end case op2
         end
 
-        `EXE_ORI: begin //ori指令
+        `EXE_ORI: begin  //ori指令
           wreg_o = `WriteEnable;
           aluop_o = `EXE_OR_OP;
           alusel_o = `EXE_RES_LOGIC;
@@ -539,6 +559,14 @@ module id (
     end
   end
 
+  always @(*) begin
+    if (pre_inst_is_load == 1'b1 && ex_wd_i == reg1_addr_o && reg1_read_o == 1'b1) begin
+      stallreq_for_reg1_loadrelate = `Stop;
+    end else begin
+      stallreq_for_reg1_loadrelate = `NoStop;
+    end
+  end
+
   /****************************************************************
 *********** 第二段：确定进行运算的源操作数2 *********
 *****************************************************************/
@@ -556,6 +584,14 @@ module id (
       reg2_o = imm;
     end else begin
       reg2_o = `ZeroWord;
+    end
+  end
+
+  always @(*) begin
+    if (pre_inst_is_load == 1'b1 && ex_wd_i == reg2_addr_o && reg2_read_o == 1'b1) begin
+      stallreq_for_reg2_loadrelate = `Stop;
+    end else begin
+      stallreq_for_reg2_loadrelate = `NoStop;
     end
   end
 

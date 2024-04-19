@@ -91,10 +91,14 @@ module openmips (
   wire branch_flag;
   wire [`RegBus] branch_target_address;
 
+  wire [5:0] stall;
+  wire stallreq_from_id;
+
   // pc_reg例化
   pc_reg pc_reg0 (
       .clk(clk),
       .rst(rst),
+      .stall(stall),
       .branch_flag_i(branch_flag),
       .branch_target_address_i(branch_target_address),
       .pc(pc),
@@ -107,6 +111,7 @@ module openmips (
   if_id if_id0 (
       .clk(clk),
       .rst(rst),
+      .stall(stall),
       .if_pc(pc),
       .if_inst(rom_data_i),
       .id_pc(id_pc_i),
@@ -128,6 +133,7 @@ module openmips (
       .ex_wreg_i(ex_wreg_o),
       .ex_wdata_i(ex_wdata_o),
       .ex_wd_i(ex_wd_o),
+      .ex_aluop_i(ex_aluop_o),
 
       //来自MEM模块的输入
       .mem_wreg_i(mem_wreg_o),
@@ -154,7 +160,9 @@ module openmips (
       .branch_target_address_o(branch_target_address),
       .next_inst_in_delayslot_o(id_next_inst_in_delayslot_o),
       .is_in_delayslot_o(id_is_in_delayslot_o),
-      .link_addr_o(id_link_address_o)
+      .link_addr_o(id_link_address_o),
+
+      .stallreq(stallreq_from_id)
   );
 
   // 通用寄存器Regfile模块例化
@@ -174,8 +182,9 @@ module openmips (
 
   // ID/EX模块例化
   id_ex id_ex0 (
-      .clk(clk),
-      .rst(rst),
+      .clk  (clk),
+      .rst  (rst),
+      .stall(stall),
 
       // 从译码阶段ID模块传过来的信息
       .id_aluop(id_aluop_o),
@@ -229,8 +238,9 @@ module openmips (
 
   // EX/MEM模块例化
   ex_mem ex_mem0 (
-      .clk(clk),
-      .rst(rst),
+      .clk  (clk),
+      .rst  (rst),
+      .stall(stall),
 
       // 来自执行阶段EX模块的信息
       .ex_wd(ex_wd_o),
@@ -278,8 +288,9 @@ module openmips (
 
   // MEM/WB模块例化
   mem_wb mem_wb0 (
-      .clk(clk),
-      .rst(rst),
+      .clk  (clk),
+      .rst  (rst),
+      .stall(stall),
 
       // 来自访存阶段MEM模块的信息
       .mem_wd(mem_wd_o),
@@ -291,5 +302,12 @@ module openmips (
       .wb_wreg(wb_wreg_o),
       .wb_wdata(wb_wdata_o)
   );
+
+  ctrl ctrl0 (
+      .rst             (rst),
+      .stallreq_from_id(stallreq_from_id),
+      .stall           (stall)
+  );
+
 
 endmodule
